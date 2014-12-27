@@ -28,7 +28,7 @@ public class ConfigurationWindow extends JPanel{
 			fileChooser = new JFileChooser();
 			fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 			fileChooser.setMultiSelectionEnabled(false);
-			fileChooser.setDialogTitle("Configuración - Seleccione directorio");
+			fileChooser.setDialogTitle("ConfiguraciÃ³n - Seleccione directorio");
 			fileChooser.setCurrentDirectory(new File(Configuration.getInstance().getValue(PPTFinder.POWERPOINT_PROPERTIES_KEY)));
 		}
 		return fileChooser;

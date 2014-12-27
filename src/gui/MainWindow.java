@@ -31,8 +31,14 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.Border;
 
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.context.annotation.Configuration;
+
 import model.FindTypeEnum;
 
+@Configuration
+@EnableAutoConfiguration
 public class MainWindow extends JFrame{
 	/**
 	 * 
@@ -69,11 +75,14 @@ public class MainWindow extends JFrame{
 		} catch (UnsupportedLookAndFeelException e) {
 			e.printStackTrace();
 		}
+		
+		final String[] args2 = args;
 		EventQueue.invokeLater(new Runnable() {
 			
 			@Override
 			public void run() {
-				new MainWindow();					
+				SpringApplication.run(MainWindow.class, args2);
+//				new MainWindow();					
 			}
 		});
 			
@@ -84,9 +93,9 @@ public class MainWindow extends JFrame{
 	public JRadioButton getChkByTitle() {
 		if (chkByTitle == null) {
 			chkByTitle = new JRadioButton();
-			chkByTitle.setText("Por título ");
+			chkByTitle.setText("Por tÃ­tulo ");
 			chkByTitle.setSelected(true);
-			chkByTitle.setToolTipText("Filtrar por título");
+			chkByTitle.setToolTipText("Filtrar por tÃ­tulo");
 			//chkByTitle.setBackground(new Color(162, 46, 186));
 			chkByTitle.addActionListener(new ActionListener() {
 				
@@ -249,7 +258,7 @@ public class MainWindow extends JFrame{
 	
 	private JMenuItem getItemConfiguration() {
 		if (itemConfiguration == null) {
-			itemConfiguration = new JMenuItem("Configuración");
+			itemConfiguration = new JMenuItem("ConfiguraciÃ³n");
 			itemConfiguration.addActionListener(new ActionListener() {
 				
 				@Override
@@ -267,7 +276,7 @@ public class MainWindow extends JFrame{
 		Component[] components = container.getComponents();
 			for (Component c : components) {
 				if (c instanceof JTextArea 
-						|| c instanceof JTextField || c instanceof Border)
+						|| c instanceof JTextField || c instanceof Border || c instanceof JMenuBar)
 					continue;
 				
 //				c.setBackground(new Color(186, 117 , 255));

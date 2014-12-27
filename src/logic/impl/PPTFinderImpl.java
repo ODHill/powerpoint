@@ -10,7 +10,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 import logic.interfaces.PPTFinder;
 import model.Powerpoint;
@@ -24,7 +23,7 @@ import util.Utils;
 
 public class PPTFinderImpl implements PPTFinder {
 		
-	//TODO ver de hacer busqueda recursiva por si ponen directorios dentro de directorios
+	//TODO do recursive search
 	
 	public Powerpoint searchFileByName(String name)  {
 		File file = new File(Configuration.getInstance().getValue(POWERPOINT_PROPERTIES_KEY) + File.separatorChar + name);
@@ -83,15 +82,30 @@ public class PPTFinderImpl implements PPTFinder {
 	   			 }
 
 	   		 } else {
-	   			ExecutorService executor = Executors.newFixedThreadPool(2);
+		   		int processors = Runtime.getRuntime().availableProcessors();
+	   			ExecutorService executor = Executors.newFixedThreadPool(processors);
 	   			CompletionService<List<Powerpoint>>  completitionService= new ExecutorCompletionService<List<Powerpoint>>(executor);
-	   			int medium = files.length / 2;
+//	   			int medium = files.length / 2;
+//	   			
+//	   			File[] files1 = Arrays.copyOfRange(files, 0, medium);
+//	   			File[] files2 = Arrays.copyOfRange(files, medium, files.length);
+//	   			
+//	   			completitionService.submit(new PPTFinderTask(files1, words));
+//	   			completitionService.submit(new PPTFinderTask(files2, words));
 	   			
-	   			File[] files1 = Arrays.copyOfRange(files, 0, medium);
-	   			File[] files2 = Arrays.copyOfRange(files, medium, files.length);
+
+		   		 int begin = 0;
+			   	 int size = files.length/ processors;
+			   	 int end = size;
 	   			
-	   			completitionService.submit(new PPTFinderTask(files1, words));
-	   			completitionService.submit(new PPTFinderTask(files2, words));
+			   	 for(int i = 1 ; i <= processors; i++) {
+				   		completitionService.submit(new PPTFinderTask(Arrays.copyOfRange(files, begin, end), words));
+				   		 begin = end;
+				   		 end = begin + size;
+				   		 
+				   		 if (i == (processors -1))
+				   			 end = files.length;   		 
+				   	 }
 	   			
 	   			for(int index = 0; index < 2; index++) {
 		   	         try {
@@ -102,13 +116,13 @@ public class PPTFinderImpl implements PPTFinder {
 	   			}
 	   			
 	   			executor.shutdownNow();
-	   		 }
+	   			
+		    }	   				   				   		   	 
 	   		 
 	   	 }
 	   	 System.out.println(System.currentTimeMillis() - start);
 		return filesMatched;
 	}
-
 
 	public List<Powerpoint> getAll() throws XmlException, OpenXML4JException, IOException {
 		List<Powerpoint> powerpoints = new ArrayList<Powerpoint>();
